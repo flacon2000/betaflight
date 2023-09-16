@@ -68,7 +68,7 @@ PG_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig,
     .failsafe_throttle_low_delay = 100,                  // default throttle low delay for "just disarm" on failsafe condition
     .failsafe_delay = 80,                                // 8 sec stage 1 period, can regain control on signal recovery, at idle in drop mode
     // Изменить тип переменной на 16бит чтобы можно было устанавливать большие промежутки времени
-    .failsafe_off_delay = 200,                           // 20 sec in landing phase, if enabled
+    .failsafe_off_delay = 250,                           // 25 sec in landing phase, if enabled
     .failsafe_switch_mode = FAILSAFE_SWITCH_MODE_STAGE1, // default failsafe switch action is identical to rc link loss
     .failsafe_procedure = FAILSAFE_PROCEDURE_AUTO_LANDING, // default full failsafe procedure is 0: auto-landing
     .failsafe_recovery_delay = 10,                       // 1 sec of valid rx data needed to allow recovering from failsafe procedure
