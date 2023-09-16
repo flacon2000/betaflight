@@ -33,6 +33,7 @@
 
 typedef struct failsafeConfig_s {
     uint16_t failsafe_throttle;             // Throttle level used for landing - specify value between 1000..2000 (pwm pulse width for slightly below hover). center throttle = 1500.
+    uint16_t failsafe_pitch;                // Pitch level used for landing - specify value between 1000..2000 (pwm pulse width for slightly below hover). center pitch = 1500.
     uint16_t failsafe_throttle_low_delay;   // Time throttle stick must have been below 'min_check' to "JustDisarm" instead of "full failsafe procedure".
     uint8_t failsafe_delay;                 // Guard time for failsafe activation after signal lost. 1 step = 0.1sec - 1sec in example (10)
     uint8_t failsafe_off_delay;             // Time for Landing before motors stop in 0.1sec. 1 step = 0.1sec - 20sec in example (200)

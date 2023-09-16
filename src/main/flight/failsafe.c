@@ -63,10 +63,12 @@ static failsafeState_t failsafeState;
 PG_REGISTER_WITH_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig, PG_FAILSAFE_CONFIG, 2);
 
 PG_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig,
-    .failsafe_throttle = 1000,                           // default throttle off.
+    .failsafe_throttle = 1200,                           // default throttle 1200 (landing).
+    .failsafe_pitch = 1600,                              // default pitch slow forward.
     .failsafe_throttle_low_delay = 100,                  // default throttle low delay for "just disarm" on failsafe condition
-    .failsafe_delay = 15,                                // 1.5 sec stage 1 period, can regain control on signal recovery, at idle in drop mode
-    .failsafe_off_delay = 10,                            // 1 sec in landing phase, if enabled
+    .failsafe_delay = 80,                                // 8 sec stage 1 period, can regain control on signal recovery, at idle in drop mode
+    // Изменить тип переменной на 16бит чтобы можно было устанавливать большие промежутки времени
+    .failsafe_off_delay = 200,                           // 20 sec in landing phase, if enabled
     .failsafe_switch_mode = FAILSAFE_SWITCH_MODE_STAGE1, // default failsafe switch action is identical to rc link loss
     .failsafe_procedure = FAILSAFE_PROCEDURE_DROP_IT,    // default full failsafe procedure is 0: auto-landing
     .failsafe_recovery_delay = 10,                       // 1 sec of valid rx data needed to allow recovering from failsafe procedure
@@ -230,7 +232,7 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
     }
 
     bool receivingRxData = failsafeIsReceivingRxData();
-    // returns state of FAILSAFE_RXLINK_UP, which 
+    // returns state of FAILSAFE_RXLINK_UP, which
     // goes false after the stage 1 delay, whether from signal loss or BOXFAILSAFE switch activation
     // goes true immediately BOXFAILSAFE switch is reverted, or after recovery delay once signal recovers
     // essentially means 'should be in failsafe stage 2'
@@ -365,7 +367,7 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
             case FAILSAFE_GPS_RESCUE:
                 if (receivingRxData) {
                     if (areSticksActive(failsafeConfig()->failsafe_stick_threshold) || failsafeState.boxFailsafeSwitchWasOn) {
-                        // exits the rescue immediately if failsafe was initiated by switch, otherwise 
+                        // exits the rescue immediately if failsafe was initiated by switch, otherwise
                         // requires stick input to exit the rescue after a true Rx loss failsafe
                         // NB this test requires stick inputs to be received during GPS Rescue see PR #7936 for rationale
                         failsafeState.phase = FAILSAFE_RX_LOSS_RECOVERED;

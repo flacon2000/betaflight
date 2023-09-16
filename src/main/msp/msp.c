@@ -1516,7 +1516,7 @@ case MSP_NAME:
         sbufWriteU16(dst, (uint16_t)constrain(gpsSol.llh.altCm / 100, 0, UINT16_MAX)); // alt changed from 1m to 0.01m per lsb since MSP API 1.39 by RTH. To maintain backwards compatibility compensate to 1m per lsb in MSP again.
         sbufWriteU16(dst, gpsSol.groundSpeed);
         sbufWriteU16(dst, gpsSol.groundCourse);
-        // Added in API version 1.44    
+        // Added in API version 1.44
         sbufWriteU16(dst, gpsSol.dop.hdop);
         break;
 
@@ -1647,6 +1647,7 @@ case MSP_NAME:
         sbufWriteU8(dst, failsafeConfig()->failsafe_delay);
         sbufWriteU8(dst, failsafeConfig()->failsafe_off_delay);
         sbufWriteU16(dst, failsafeConfig()->failsafe_throttle);
+        sbufWriteU16(dst, failsafeConfig()->failsafe_pitch);
         sbufWriteU8(dst, failsafeConfig()->failsafe_switch_mode);
         sbufWriteU16(dst, failsafeConfig()->failsafe_throttle_low_delay);
         sbufWriteU8(dst, failsafeConfig()->failsafe_procedure);
@@ -3708,13 +3709,14 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
 #else
             uint8_t emptyUid[6];
             sbufReadData(src, emptyUid, 6);
-#endif        
+#endif
         }
         break;
     case MSP_SET_FAILSAFE_CONFIG:
         failsafeConfigMutable()->failsafe_delay = sbufReadU8(src);
         failsafeConfigMutable()->failsafe_off_delay = sbufReadU8(src);
         failsafeConfigMutable()->failsafe_throttle = sbufReadU16(src);
+        failsafeConfigMutable()->failsafe_pitch = sbufReadU16(src);
         failsafeConfigMutable()->failsafe_switch_mode = sbufReadU8(src);
         failsafeConfigMutable()->failsafe_throttle_low_delay = sbufReadU16(src);
         failsafeConfigMutable()->failsafe_procedure = sbufReadU8(src);

@@ -381,7 +381,7 @@ void rxInit(void)
     // Configurable amount of filtering to remove excessive jumpiness of the values on the osd
     float k = (256.0f - rxConfig()->rssi_smoothing) / 256.0f;
 
-    pt1FilterInit(&rssiFilter, k);  
+    pt1FilterInit(&rssiFilter, k);
 
 #ifdef USE_RX_RSSI_DBM
     pt1FilterInit(&rssiDbmFilter, k);
@@ -696,7 +696,12 @@ void detectAndApplySignalLossBehaviour(void)
                         sample = failsafeConfig()->failsafe_throttle;
                         // stage 2 failsafe throttle value. In GPS Rescue Flight mode, gpsRescueGetThrottle overrides, late in mixer.c
                     } else {
-                        sample = rxConfig()->midrc;
+                        if (channel == PITCH ) {
+                        sample = failsafeConfig()->failsafe_pitch;
+                        // stage 2 failsafe pitch value. In GPS Rescue Flight mode, gpsRescueGetThrottle overrides, late in mixer.c
+                        } else {
+                            sample = rxConfig()->midrc;
+                        }
                     }
                 }
             } else {

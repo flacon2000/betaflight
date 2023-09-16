@@ -84,6 +84,7 @@ void configureFailsafe(void)
     failsafeConfigMutable()->failsafe_off_delay = 15; // 1.5 seconds
     failsafeConfigMutable()->failsafe_switch_mode = FAILSAFE_SWITCH_MODE_STAGE1;
     failsafeConfigMutable()->failsafe_throttle = 1200;
+    failsafeConfigMutable()->failsafe_pitch = 1600;
     failsafeConfigMutable()->failsafe_throttle_low_delay = 100; // 10 seconds
     failsafeConfigMutable()->failsafe_procedure = FAILSAFE_PROCEDURE_AUTO_LANDING;
     // NB we don't have failsafe_recovery_delay so use PERIOD_RXDATA_RECOVERY (200ms)
@@ -183,7 +184,7 @@ TEST(FlightFailsafeTest, TestFailsafeDetectsRxLossAndStartsLanding)
     // given
     configureFailsafe();
     failsafeInit();
-    
+
     DISABLE_ARMING_FLAG(ARMED);
     resetCallCounters();
     failsafeStartMonitoring();
@@ -449,7 +450,7 @@ TEST(FlightFailsafeTest, TestFailsafeSwitchModeKill)
     sysTickUptime += PERIOD_RXDATA_RECOVERY;
     failsafeOnValidDataReceived();
 
-    // when 
+    // when
     failsafeUpdateState();
 
     // we should still be in failsafe monitoring mode
@@ -492,7 +493,7 @@ TEST(FlightFailsafeTest, TestFailsafeSwitchModeStage1OrStage2Drop)
 
     // when
     failsafeUpdateState();
-    
+
     // confirm that we are in idle mode
     EXPECT_EQ(0, CALL_COUNTER(COUNTER_MW_DISARM));
     EXPECT_FALSE(failsafeIsActive());
@@ -524,7 +525,7 @@ TEST(FlightFailsafeTest, TestFailsafeSwitchModeStage1OrStage2Drop)
     // receivingRxData is immediately true because signal exists
     failsafeOnValidDataReceived();
 
-    // when 
+    // when
     failsafeUpdateState();
 
     // we should now have exited failsafe
@@ -554,7 +555,7 @@ TEST(FlightFailsafeTest, TestFailsafeSwitchModeStage2Land)
 
     // when
     failsafeUpdateState();
-    
+
     // confirm that we are in idle mode
     EXPECT_EQ(0, CALL_COUNTER(COUNTER_MW_DISARM));
     EXPECT_FALSE(failsafeIsActive());
@@ -571,7 +572,7 @@ TEST(FlightFailsafeTest, TestFailsafeSwitchModeStage2Land)
     EXPECT_TRUE(failsafeIsActive());               // stick induced failsafe allows re-arming
     EXPECT_EQ(FAILSAFE_LANDING, failsafePhase());
     EXPECT_EQ(0, CALL_COUNTER(COUNTER_MW_DISARM));
-    
+
     // should stay in landing for failsafe_off_delay (stage 2 period) of 1s
     sysTickUptime += failsafeConfig()->failsafe_off_delay * MILLIS_PER_TENTH_SECOND;
 

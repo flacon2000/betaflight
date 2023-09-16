@@ -47,6 +47,7 @@ uint8_t failsafeConfig_failsafe_procedure;
 uint8_t failsafeConfig_failsafe_delay;
 uint8_t failsafeConfig_failsafe_off_delay;
 uint16_t failsafeConfig_failsafe_throttle;
+uint16_t failsafeConfig_failsafe_pitch;
 
 static const void *cmsx_Failsafe_onEnter(displayPort_t *pDisp)
 {
@@ -56,6 +57,7 @@ static const void *cmsx_Failsafe_onEnter(displayPort_t *pDisp)
     failsafeConfig_failsafe_delay = failsafeConfig()->failsafe_delay;
     failsafeConfig_failsafe_off_delay = failsafeConfig()->failsafe_off_delay;
     failsafeConfig_failsafe_throttle = failsafeConfig()->failsafe_throttle;
+    failsafeConfig_failsafe_pitch = failsafeConfig()->failsafe_pitch;
 
     return NULL;
 }
@@ -69,6 +71,7 @@ static const void *cmsx_Failsafe_onExit(displayPort_t *pDisp, const OSD_Entry *s
     failsafeConfigMutable()->failsafe_delay = failsafeConfig_failsafe_delay;
     failsafeConfigMutable()->failsafe_off_delay = failsafeConfig_failsafe_off_delay;
     failsafeConfigMutable()->failsafe_throttle = failsafeConfig_failsafe_throttle;
+    failsafeConfigMutable()->failsafe_pitch = failsafeConfig_failsafe_pitch;
 
     return NULL;
 }
@@ -81,6 +84,7 @@ static const OSD_Entry cmsx_menuFailsafeEntries[] =
     { "GUARD TIME",       OME_FLOAT | REBOOT_REQUIRED,  NULL, &(OSD_FLOAT_t)  { &failsafeConfig_failsafe_delay, PERIOD_RXDATA_RECOVERY / MILLIS_PER_TENTH_SECOND, 200, 1, 100 } },
     { "STAGE 2 DELAY",    OME_FLOAT | REBOOT_REQUIRED,  NULL, &(OSD_FLOAT_t)  { &failsafeConfig_failsafe_off_delay, 0, 200, 1, 100 } },
     { "STAGE 2 THROTTLE", OME_UINT16 | REBOOT_REQUIRED, NULL, &(OSD_UINT16_t) { &failsafeConfig_failsafe_throttle, PWM_PULSE_MIN, PWM_PULSE_MAX, 1 } },
+    { "STAGE 2 PITCH", OME_UINT16 | REBOOT_REQUIRED, NULL, &(OSD_UINT16_t) { &failsafeConfig_failsafe_pitch, PWM_PULSE_MIN, PWM_PULSE_MAX, 1 } },
 #ifdef USE_CMS_GPS_RESCUE_MENU
     { "GPS RESCUE",       OME_Submenu, cmsMenuChange, &cmsx_menuGpsRescue},
 #endif
