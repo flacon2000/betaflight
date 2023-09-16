@@ -70,7 +70,7 @@ PG_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig,
     // Изменить тип переменной на 16бит чтобы можно было устанавливать большие промежутки времени
     .failsafe_off_delay = 200,                           // 20 sec in landing phase, if enabled
     .failsafe_switch_mode = FAILSAFE_SWITCH_MODE_STAGE1, // default failsafe switch action is identical to rc link loss
-    .failsafe_procedure = FAILSAFE_PROCEDURE_DROP_IT,    // default full failsafe procedure is 0: auto-landing
+    .failsafe_procedure = FAILSAFE_PROCEDURE_AUTO_LANDING, // default full failsafe procedure is 0: auto-landing
     .failsafe_recovery_delay = 10,                       // 1 sec of valid rx data needed to allow recovering from failsafe procedure
     .failsafe_stick_threshold = 30                       // 30 percent of stick deflection to exit GPS Rescue procedure
 );
