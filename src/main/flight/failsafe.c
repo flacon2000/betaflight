@@ -385,7 +385,8 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
                 break;
 #endif
             case FAILSAFE_LANDED:
-                disarm(DISARM_REASON_FAILSAFE);
+                // Disable disarm for long flight to the target
+                // disarm(DISARM_REASON_FAILSAFE);
                 setArmingDisabled(ARMING_DISABLED_FAILSAFE);
                 //  prevent accidently rearming by an intermittent rx link
                 failsafeState.receivingRxDataPeriod = millis() + failsafeState.receivingRxDataPeriodPreset;
