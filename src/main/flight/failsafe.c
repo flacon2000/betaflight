@@ -64,15 +64,14 @@ PG_REGISTER_WITH_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig, PG_FAILSAFE_CO
 
 PG_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig,
     .failsafe_throttle = 1200,                           // default throttle 1200 (landing).
-    .failsafe_pitch = 1600,                              // default pitch slow forward.
     .failsafe_throttle_low_delay = 100,                  // default throttle low delay for "just disarm" on failsafe condition
     .failsafe_delay = 80,                                // 8 sec stage 1 period, can regain control on signal recovery, at idle in drop mode
-    // Изменить тип переменной на 16бит чтобы можно было устанавливать большие промежутки времени
     .failsafe_off_delay = 250,                           // 25 sec in landing phase, if enabled
     .failsafe_switch_mode = FAILSAFE_SWITCH_MODE_STAGE1, // default failsafe switch action is identical to rc link loss
     .failsafe_procedure = FAILSAFE_PROCEDURE_AUTO_LANDING, // default full failsafe procedure is 0: auto-landing
     .failsafe_recovery_delay = 10,                       // 1 sec of valid rx data needed to allow recovering from failsafe procedure
-    .failsafe_stick_threshold = 30                       // 30 percent of stick deflection to exit GPS Rescue procedure
+    .failsafe_stick_threshold = 30,                       // 30 percent of stick deflection to exit GPS Rescue procedure
+    .failsafe_pitch = 1600                              // default pitch slow forward.
 );
 
 const char * const failsafeProcedureNames[FAILSAFE_PROCEDURE_COUNT] = {
@@ -139,7 +138,9 @@ void failsafeStartMonitoring(void)
 
 static bool failsafeShouldHaveCausedLandingByNow(void)
 {
-    return (millis() > failsafeState.landingShouldBeFinishedAt);
+    // Flight streight to target! Never stop!
+    // return (millis() > failsafeState.landingShouldBeFinishedAt);
+    return false;
 }
 
 bool failsafeIsReceivingRxData(void)
@@ -353,6 +354,8 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
                     if (armed) {
                         beeperMode = BEEPER_RX_LOST_LANDING;
                     }
+                    DEBUG_SET(DEBUG_FAILSAFE, 3, 10);
+
                     if (failsafeShouldHaveCausedLandingByNow() || crashRecoveryModeActive() || !armed) {
                         // to manually disarm while Landing, aux channels must be enabled
                         // note also that disarming via arm box must be possible during failsafe in rc_controls.c
@@ -361,6 +364,7 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
                         failsafeState.phase = FAILSAFE_LANDED;
                         reprocessState = true;
                     }
+
                 }
                 break;
 #ifdef USE_GPS_RESCUE
@@ -385,8 +389,7 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
                 break;
 #endif
             case FAILSAFE_LANDED:
-                // Disable disarm for long flight to the target
-                // disarm(DISARM_REASON_FAILSAFE);
+                disarm(DISARM_REASON_FAILSAFE);
                 setArmingDisabled(ARMING_DISABLED_FAILSAFE);
                 //  prevent accidently rearming by an intermittent rx link
                 failsafeState.receivingRxDataPeriod = millis() + failsafeState.receivingRxDataPeriodPreset;
@@ -427,7 +430,7 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
         }
 
     DEBUG_SET(DEBUG_FAILSAFE, 0, failsafeState.boxFailsafeSwitchWasOn);
-    DEBUG_SET(DEBUG_FAILSAFE, 3, failsafeState.phase);
+    // DEBUG_SET(DEBUG_FAILSAFE, 3, failsafeState.phase);
 
     } while (reprocessState);
 
