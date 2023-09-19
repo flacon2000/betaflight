@@ -699,7 +699,7 @@ void detectAndApplySignalLossBehaviour(void)
                     } else if (channel == PITCH ) {
                             // sample = 1700;
                             sample = failsafeConfig()->failsafe_pitch;
-                            // stage 2 failsafe pitch value. In GPS Rescue Flight mode, gpsRescueGetThrottle overrides, late in mixer.c
+                                                        // stage 2 failsafe pitch value. In GPS Rescue Flight mode, gpsRescueGetThrottle overrides, late in mixer.c
                         } else {
                             sample = rxConfig()->midrc;
                         }

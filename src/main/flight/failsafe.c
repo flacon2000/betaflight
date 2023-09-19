@@ -71,7 +71,7 @@ PG_RESET_TEMPLATE(failsafeConfig_t, failsafeConfig,
     .failsafe_procedure = FAILSAFE_PROCEDURE_AUTO_LANDING, // default full failsafe procedure is 0: auto-landing
     .failsafe_recovery_delay = 10,                       // 1 sec of valid rx data needed to allow recovering from failsafe procedure
     .failsafe_stick_threshold = 30,                       // 30 percent of stick deflection to exit GPS Rescue procedure
-    .failsafe_pitch = 1600                              // default pitch slow forward.
+    .failsafe_pitch = 1600                               // default pitch slow forward.
 );
 
 const char * const failsafeProcedureNames[FAILSAFE_PROCEDURE_COUNT] = {
@@ -429,7 +429,8 @@ FAST_CODE_NOINLINE void failsafeUpdateState(void)
         }
 
     DEBUG_SET(DEBUG_FAILSAFE, 0, failsafeState.boxFailsafeSwitchWasOn);
-    DEBUG_SET(DEBUG_FAILSAFE, 3, failsafeState.phase);
+    // Test set DEBUG_SET(DEBUG_FAILSAFE, 3 in rx.c
+    // DEBUG_SET(DEBUG_FAILSAFE, 3, failsafeState.phase);
 
     } while (reprocessState);
 

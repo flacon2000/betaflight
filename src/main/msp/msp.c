@@ -3719,7 +3719,10 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
         failsafeConfigMutable()->failsafe_switch_mode = sbufReadU8(src);
         failsafeConfigMutable()->failsafe_throttle_low_delay = sbufReadU16(src);
         failsafeConfigMutable()->failsafe_procedure = sbufReadU8(src);
-        failsafeConfigMutable()->failsafe_pitch = sbufReadU16(src);
+        if (sbufBytesRemaining(src) >= 1) {
+	        // If the configurator supports failsafe_pitch, read it from the packet
+	        failsafeConfigMutable()->failsafe_pitch = sbufReadU16(src);
+        }
         break;
 
     case MSP_SET_RXFAIL_CONFIG:
