@@ -40,7 +40,7 @@ stm32.mak
 # artefacts for VS Code
 /.vscode/
 
-# artefacts for Visual Studio 
+# artefacts for Visual Studio
 /.vs
 
 # artefacts for CLion
@@ -55,3 +55,4 @@ eeprom.bin
 
 # board scratch space used for automated build API, and developers
 /src/main/board
+mk_spdb.sh
